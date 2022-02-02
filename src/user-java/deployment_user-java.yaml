@@ -17,8 +17,30 @@ spec:
       containers:
       - name: user-java-image
         image: registryvxg9504.azurecr.io/user-java:1.0
+        env:
+          - name: SQL_USER
+            value: sqladminvXg9504
+          - name: SQL_SERVER
+            value: sqlservervxg9504.database.windows.net
+          - name: SQL_DBNAME
+            value: mydrivingDB
+          - name: SQL_PASSWORD
+            value: fF4gr8Vd4
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
       imagePullSecrets:
-       - name: openhack-docker-reg
+        - name: openhack-docker-reg
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java-service
+spec:
+  ports:
+  - port: 8081
+    targetPort: 80
+  selector:
+    app: user-java
+---
