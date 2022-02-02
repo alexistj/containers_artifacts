@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poi
+  labels:
+    app: poi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poi
+  template:
+    metadata:
+      labels:
+        app: poi
+    spec:
+      containers:
+      - name: poi-image
+        image: registryvxg9504.azurecr.io/poi:1.0
+        env:
+        - name: SQL_USER
+          value: sqladminvXg9504
+        - name: SQL_SERVER
+          value: sqlservervxg9504.database.windows.net 
+        - name: SQL_DBNAME
+          value: mydrivingDB
+        - name: SQL_PASSWORD
+          value: fF4gr8Vd4
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+    
+---    
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi-service
+spec:
+  selector: 
+    app: poi
+  ports:
+    - protocol: TCP
+      port: 8088
+      targetPort: 80
