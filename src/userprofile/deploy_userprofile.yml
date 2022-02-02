@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userprofile
+  labels:
+    app: userprofile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userprofile
+  template:
+    metadata:
+      labels:
+        app: userprofile
+    spec:
+      containers:
+      - name: userprofile-image
+        image: registryvxg9504.azurecr.io/userprofile:1.0
+        env:
+          - name: SQL_USER
+            valueFrom:
+             secretKeyRef:
+              name: secret-openhack
+              key: sql_user
+          - name: SQL_SERVER
+            value: sqlservervxg9504.database.windows.net
+          - name: SQL_DBNAME
+            value: mydrivingDB
+          - name: SQL_PASSWORD
+            valueFrom:
+             secretKeyRef:
+              name: secret-openhack
+              key: sql_password
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: openhack-docker-reg
+        
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userprofile-service
+spec:
+  ports:
+  - port: 6379
+    targetPort: 80
+  selector:
+    app: userprofile
+---
+
+ 

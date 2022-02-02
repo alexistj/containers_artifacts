@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userprofile
+  labels:
+    app: userprofile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userprofile
+  template:
+    metadata:
+      labels:
+        app: userprofile
+    spec:
+      containers:
+      - name: userprofile-image
+        image: registryvxg9504.azurecr.io/userprofile:8.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+       - name: openhack-docker-reg
+      env:
+       - name: SQL_USER
+         secretKeyRef:
+              # The ConfigMap containing the value you want to assign to SPECIAL_LEVEL_KEY
+              name: sql_user
+              # Specify the key associated with the value
+              key: sql_user
+       - name: SQL_SERVER
+         configMapKeyRef:
+              name: sql_server
+              key: sql_server
+       - name: SQL_DBNAME
+         configMapKeyRef:
+              name: sql_dbname
+              key: sql_dbname
+       - name: SQL_PASSWORD
+         secretKeyRef:
+              name: sql_password
+              key: sql_password
