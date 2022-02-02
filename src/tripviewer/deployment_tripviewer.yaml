@@ -17,8 +17,22 @@ spec:
       containers:
       - name: tripviewer-image
         image: registryvxg9504.azurecr.io/tripviwer:1.0
+        env:
+        - name: USERPROFILE_API_ENDPOINT
+          value: "http://10.0.156.18:6379"
+        - name: TRIPS_API_ENDPOINT
+          value: "XXXXX"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
-      imagePullSecrets:
-       - name: openhack-docker-reg
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripviewer-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: tripviewer
